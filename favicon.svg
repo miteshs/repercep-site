@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Favicon: the eye alone on a dark tile, simplified to read at 16px. -->
+  <rect width="64" height="64" rx="14" fill="#0B0E14"/>
+  <g fill="none" stroke="#E8EBF2" stroke-width="4.4" stroke-linecap="round">
+    <path d="M10 32 C18 18.5 46 18.5 54 32"/>
+    <path d="M10 32 C18 45.5 46 45.5 54 32"/>
+  </g>
+  <circle cx="32" cy="32" r="7" fill="#E8A33D"/>
+</svg>

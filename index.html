@@ -330,12 +330,15 @@ section.block{padding:clamp(3.4rem,8vh,5.6rem) 0}
 /* proof chips */
 .chips{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.8rem}
 @media (max-width:760px){ .chips{grid-template-columns:1fr} }
-.chipstat{border:1px solid var(--line-strong);border-radius:4px;padding:1.1rem 1.3rem;background:var(--bg-raise)}
+.chipstat{
+  display:flex;flex-direction:column;gap:.45rem;
+  border:1px solid var(--line-strong);border-radius:4px;padding:1.1rem 1.3rem;background:var(--bg-raise);
+}
 .chipstat .cv{
   font-weight:640;font-stretch:112%;font-size:1.45rem;letter-spacing:-.01em;
-  font-variant-numeric:tabular-nums;
+  line-height:1.25;font-variant-numeric:tabular-nums;
 }
-.chipstat .cl{font-family:var(--mono);font-size:var(--fs-micro);letter-spacing:.06em;color:var(--ink-2);margin-top:.35rem;line-height:1.6}
+.chipstat .cl{font-family:var(--mono);font-size:var(--fs-micro);letter-spacing:.06em;color:var(--ink-2);line-height:1.6}
 
 .methodology{
   margin-top:1.4rem;font-family:var(--mono);font-size:var(--fs-micro);line-height:1.8;

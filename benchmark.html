@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Request the benchmark report — Repercep</title>
+<meta name="description" content="Request Repercep's measured world-model serving benchmarks — NVIDIA Cosmos on H100 and AMD MI300X, full methodology and raw results.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta property="og:title" content="Request the benchmark report — Repercep">
+<meta property="og:description" content="Measured world-model serving numbers: NVIDIA Cosmos on H100 and AMD MI300X, full methodology, raw result provenance.">
+<meta property="og:url" content="https://repercep.ai/benchmark.html">
+<meta property="og:type" content="website">
+<style>
+/* ---------- fonts ---------- */
+@font-face{
+  font-family:'Archivo';
+  font-style:normal;
+  font-weight:100 900;
+  font-stretch:62% 125%;
+  font-display:swap;
+  src:url(fonts/archivo-var.woff2) format('woff2');
+}
+@font-face{
+  font-family:'Plex Mono';
+  font-style:normal;
+  font-weight:400;
+  font-display:swap;
+  src:url(fonts/plexmono-400.woff2) format('woff2');
+}
+@font-face{
+  font-family:'Plex Mono';
+  font-style:normal;
+  font-weight:500;
+  font-display:swap;
+  src:url(fonts/plexmono-500.woff2) format('woff2');
+}
+
+/* ---------- tokens ---------- */
+:root{
+  --bg:#F6F7F9;
+  --bg-raise:#FFFFFF;
+  --ink:#171B23;
+  --ink-2:#5A6274;
+  --line:#DFE2E9;
+  --line-strong:#C6CAD4;
+  --accent:#A96A10;
+  --accent-bright:#C77E14;
+  --pupil:#D08A1E;
+  --err:#B3423A;
+  --readout-bg:#0E1119;
+  --readout-ink:#EDEFF4;
+  --readout-muted:#8B93A7;
+  --readout-line:#252B3A;
+  --readout-accent:#E8A33D;
+  --sans:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0B0E14;
+    --bg-raise:#11151F;
+    --ink:#E8EBF2;
+    --ink-2:#8B93A7;
+    --line:#212736;
+    --line-strong:#333B4E;
+    --accent:#E8A33D;
+    --accent-bright:#F2B863;
+    --pupil:#E8A33D;
+    --err:#E06C5F;
+    --readout-bg:#11151F;
+    --readout-ink:#EDEFF4;
+    --readout-muted:#8B93A7;
+    --readout-line:#252B3A;
+    --readout-accent:#E8A33D;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#F6F7F9; --bg-raise:#FFFFFF; --ink:#171B23; --ink-2:#5A6274;
+  --line:#DFE2E9; --line-strong:#C6CAD4;
+  --accent:#A96A10; --accent-bright:#C77E14; --pupil:#D08A1E; --err:#B3423A;
+  --readout-bg:#0E1119; --readout-ink:#EDEFF4; --readout-muted:#8B93A7;
+  --readout-line:#252B3A; --readout-accent:#E8A33D;
+}
+:root[data-theme="dark"]{
+  --bg:#0B0E14; --bg-raise:#11151F; --ink:#E8EBF2; --ink-2:#8B93A7;
+  --line:#212736; --line-strong:#333B4E;
+  --accent:#E8A33D; --accent-bright:#F2B863; --pupil:#E8A33D; --err:#E06C5F;
+  --readout-bg:#11151F; --readout-ink:#EDEFF4; --readout-muted:#8B93A7;
+  --readout-line:#252B3A; --readout-accent:#E8A33D;
+}
+
+/* ---------- base ---------- */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} }
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:17px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:var(--accent);color:var(--bg)}
+a{color:inherit}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+.wrap{max-width:1120px;margin:0 auto;padding:0 clamp(20px,4vw,48px)}
+
+.eyebrow{
+  font-family:var(--mono);
+  font-size:.72rem;
+  font-weight:500;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--accent);
+}
+.section-head{
+  display:flex;align-items:baseline;gap:1rem;
+  padding-top:1.1rem;border-top:1px solid var(--line-strong);
+  margin-bottom:2.6rem;
+}
+.section-head .idx{font-family:var(--mono);font-size:.72rem;color:var(--ink-2)}
+h2{
+  font-size:clamp(1.7rem,3.4vw,2.4rem);
+  font-weight:600;
+  font-stretch:112%;
+  line-height:1.12;
+  letter-spacing:-.01em;
+  text-wrap:balance;
+  margin-bottom:1.1rem;
+}
+.lede{max-width:62ch;color:var(--ink-2);font-size:1.06rem}
+
+/* ---------- nav ---------- */
+header{
+  position:sticky;top:0;z-index:20;
+  background:color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.nav{display:flex;align-items:center;justify-content:space-between;height:76px}
+.lockup{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+.lockup svg{width:42px;height:42px;color:var(--ink)}
+.lockup .word{
+  font-weight:600;font-stretch:110%;font-size:1.28rem;letter-spacing:.01em;
+}
+.lockup .word em{font-style:normal;color:var(--accent)}
+.nav-links{display:flex;gap:1.8rem;align-items:center}
+.nav-links a{
+  text-decoration:none;font-family:var(--mono);font-size:.74rem;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);
+}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a.cta{
+  color:var(--bg);background:var(--ink);padding:.5rem .95rem;border-radius:3px;
+}
+.nav-links a.cta:hover{background:var(--accent);color:#10131a}
+@media (max-width:760px){ .nav-links a:not(.cta){display:none} }
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-block;text-decoration:none;font-family:var(--mono);
+  font-size:.78rem;font-weight:500;letter-spacing:.09em;text-transform:uppercase;
+  padding:.85rem 1.35rem;border-radius:3px;border:1px solid var(--ink);
+  transition:background .18s,color .18s,border-color .18s;
+  background:transparent;color:var(--ink);cursor:pointer;
+}
+.btn.primary{background:var(--ink);color:var(--bg)}
+.btn.primary:hover{background:var(--accent);border-color:var(--accent);color:#10131a}
+.btn.primary:disabled{opacity:.55;cursor:default}
+.btn.primary:disabled:hover{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+
+/* ---------- page layout ---------- */
+section.block{padding:clamp(3.4rem,8vh,5.6rem) 0}
+.req-grid{
+  display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);
+  gap:clamp(2rem,5vw,4rem);align-items:start;margin-top:2.8rem;
+}
+@media (max-width:900px){ .req-grid{grid-template-columns:1fr} }
+
+/* ---------- form ---------- */
+.req-form{
+  background:var(--bg-raise);
+  border:1px solid var(--line-strong);
+  border-radius:6px;
+  padding:1.8rem 1.8rem 2rem;
+}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+@media (max-width:560px){ .frow{grid-template-columns:1fr} }
+.field{margin-bottom:1.25rem}
+.field label{
+  display:block;font-family:var(--mono);font-size:.68rem;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);
+  margin-bottom:.45rem;
+}
+.field label .opt{color:var(--ink-2);opacity:.65;text-transform:none;letter-spacing:.04em}
+.field input,.field select,.field textarea{
+  width:100%;
+  background:var(--bg);
+  border:1px solid var(--line-strong);
+  border-radius:3px;
+  padding:.7rem .8rem;
+  font-family:var(--sans);
+  font-size:.95rem;
+  color:var(--ink);
+  transition:border-color .18s;
+}
+.field textarea{min-height:104px;resize:vertical}
+.field select{appearance:none;-webkit-appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--ink-2) 50%),linear-gradient(135deg,var(--ink-2) 50%,transparent 50%);
+  background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;
+  background-size:5px 5px;background-repeat:no-repeat;padding-right:2.2rem;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 1px var(--accent);
+}
+.field input::placeholder,.field textarea::placeholder{color:var(--ink-2);opacity:.55}
+.field.invalid input{border-color:var(--err);box-shadow:0 0 0 1px var(--err)}
+.ferr{
+  display:none;font-family:var(--mono);font-size:.68rem;letter-spacing:.03em;
+  color:var(--err);margin-top:.45rem;line-height:1.6;
+}
+.field.invalid .ferr{display:block}
+.fnote{
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.03em;
+  color:var(--ink-2);margin-top:.45rem;line-height:1.6;
+}
+.form-foot{display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;margin-top:.4rem}
+.form-fail{
+  display:none;font-family:var(--mono);font-size:.72rem;color:var(--err);
+  line-height:1.7;margin-top:1rem;
+}
+.form-fail a{color:var(--accent)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+
+/* success panel */
+.form-done{
+  display:none;
+  background:var(--readout-bg);
+  border:1px solid var(--readout-line);
+  border-radius:6px;
+  padding:1.6rem 1.7rem;
+  color:var(--readout-ink);
+  font-family:var(--mono);
+}
+.form-done .rhead{
+  display:flex;justify-content:space-between;gap:1rem;
+  font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--readout-muted);
+  padding-bottom:.9rem;border-bottom:1px solid var(--readout-line);margin-bottom:1.1rem;
+}
+.form-done .dot{color:var(--readout-accent)}
+.form-done p{font-family:var(--sans);font-size:1.02rem;line-height:1.6}
+.form-done .sub{font-family:var(--mono);font-size:.7rem;color:var(--readout-muted);margin-top:.8rem;line-height:1.7}
+
+/* ---------- report contents panel ---------- */
+.readout{
+  background:var(--readout-bg);
+  border:1px solid var(--readout-line);
+  border-radius:6px;
+  padding:1.4rem 1.5rem 1.35rem;
+  color:var(--readout-ink);
+  font-family:var(--mono);
+  box-shadow:0 24px 60px -30px rgba(0,0,0,.55);
+}
+.readout .rhead{
+  display:flex;justify-content:space-between;gap:1rem;
+  font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--readout-muted);
+  padding-bottom:.9rem;border-bottom:1px solid var(--readout-line);
+}
+.readout .dot{color:var(--readout-accent);animation:blink 2.4s steps(1) infinite}
+@keyframes blink{50%{opacity:.15}}
+@media (prefers-reduced-motion: reduce){ .readout .dot{animation:none} }
+.readout ul{list-style:none;margin:0;padding:0}
+.readout li{
+  display:grid;grid-template-columns:14px minmax(0,1fr);gap:.8rem;
+  padding:.95rem 0;border-bottom:1px solid var(--readout-line);
+}
+.readout li:last-of-type{border-bottom:0}
+.readout li .tick{color:var(--readout-accent);font-size:.8rem;line-height:1.5}
+.readout li p{
+  font-family:var(--sans);font-size:.94rem;line-height:1.55;color:var(--readout-ink);
+}
+.readout li p b{font-weight:620}
+.readout .rfoot{
+  font-size:.66rem;color:var(--readout-muted);letter-spacing:.04em;
+  margin-top:.9rem;line-height:1.7;border-top:1px solid var(--readout-line);padding-top:.9rem;
+}
+
+.methodology{
+  margin-top:2.2rem;font-family:var(--mono);font-size:.7rem;line-height:1.8;
+  color:var(--ink-2);max-width:78ch;letter-spacing:.02em;
+}
+
+/* ---------- footer ---------- */
+footer{border-top:1px solid var(--line);padding:1.6rem 0 2.2rem;margin-top:clamp(2rem,6vh,4rem)}
+.foot{
+  display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;color:var(--ink-2);
+}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion: reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="lockup" href="/" aria-label="Repercep home">
+      <svg viewBox="0 0 64 64" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round">
+          <path d="M10 18.5 H54"/><path d="M10 45.5 H54"/>
+          <path d="M10 32 H17.5 M46.5 32 H54"/>
+          <path d="M17.5 32 C22.5 24.2 41.5 24.2 46.5 32"/>
+          <path d="M17.5 32 C22.5 39.8 41.5 39.8 46.5 32"/>
+        </g>
+        <circle cx="32" cy="32" r="4.6" fill="var(--pupil)"/>
+      </svg>
+      <span class="word">repercep<em>.ai</em></span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="/#compute">The workload</a>
+      <a href="/#stack">The stack</a>
+      <a href="/#products">Products</a>
+      <a href="/#results">Proof</a>
+      <a class="cta" href="mailto:hello@repercep.ai">Get in touch</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="block">
+    <div class="wrap">
+      <div class="section-head reveal"><span class="idx">→</span><span class="eyebrow">Benchmark report</span></div>
+      <h2 class="reveal">Request the measured numbers.</h2>
+      <p class="lede reveal">The full benchmark report behind the claims on the front page — methodology, hardware and software configuration, and the raw measured results. We send it to your work inbox, usually within one business day.</p>
+
+      <div class="req-grid">
+        <div class="reveal">
+          <form class="req-form" id="benchForm" novalidate>
+            <div class="frow">
+              <div class="field">
+                <label for="f-name">Name</label>
+                <input id="f-name" name="name" type="text" autocomplete="name" required>
+                <p class="ferr">Please tell us your name.</p>
+              </div>
+              <div class="field">
+                <label for="f-email">Work email</label>
+                <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="you@yourcompany.com" required>
+                <p class="ferr" id="emailErr">Please use your work email — we don't send the report to personal addresses (Gmail, Yahoo, Outlook, …).</p>
+                <p class="fnote">Business address required. The report goes to this inbox.</p>
+              </div>
+            </div>
+            <div class="frow">
+              <div class="field">
+                <label for="f-company">Company</label>
+                <input id="f-company" name="company" type="text" autocomplete="organization" required>
+                <p class="ferr">Please tell us where you work.</p>
+              </div>
+              <div class="field">
+                <label for="f-role">Role <span class="opt">· optional</span></label>
+                <input id="f-role" name="role" type="text" autocomplete="organization-title">
+              </div>
+            </div>
+            <div class="field">
+              <label for="f-workload">Your workload</label>
+              <select id="f-workload" name="workload" required>
+                <option value="" selected disabled>Select the closest match…</option>
+                <option>Robotics</option>
+                <option>Autonomy / AV</option>
+                <option>Simulation</option>
+                <option>Video generation</option>
+                <option>Evaluating world models</option>
+                <option>Other</option>
+              </select>
+              <p class="ferr">Pick the closest match — "Other" is fine.</p>
+            </div>
+            <div class="field">
+              <label for="f-notes">What are you serving? <span class="opt">· optional</span></label>
+              <textarea id="f-notes" name="notes" placeholder="Model(s), hardware you run today, latency or cost constraints…"></textarea>
+            </div>
+            <input class="hp" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <div class="form-foot">
+              <button class="btn primary" type="submit" id="benchSubmit">Request the report</button>
+              <span class="fnote" style="margin-top:0">No list, no drip campaign — you get the report, that's it.</span>
+            </div>
+            <p class="form-fail" id="benchFail">Something went wrong sending your request. Email us instead — <a href="mailto:hello@repercep.ai?subject=Benchmark%20report%20request">hello@repercep.ai</a> — and we'll reply with the report.</p>
+          </form>
+
+          <div class="form-done" id="benchDone" role="status">
+            <div class="rhead"><span>Request received</span><span class="dot">●</span></div>
+            <p>Thanks — your request is in. The report will land in your work inbox, usually within one business day.</p>
+            <p class="sub">Wrong address or in a hurry? Email <a href="mailto:hello@repercep.ai" style="color:var(--readout-accent)">hello@repercep.ai</a>.</p>
+          </div>
+        </div>
+
+        <aside class="readout reveal" aria-label="What the report contains">
+          <div class="rhead"><span>In the report</span><span class="dot">●</span></div>
+          <ul>
+            <li><span class="tick">→</span><p><b>NVIDIA H100</b> — Repercep runtime vs NVIDIA's published Cosmos serving stack, end-to-end wall time.</p></li>
+            <li><span class="tick">→</span><p><b>AMD MI300X</b> — the first public Cosmos run on AMD silicon, with the full ROCm software matrix.</p></li>
+            <li><span class="tick">→</span><p><b>Methodology</b> — same model, same frame count, single GPU. System-vs-system, no cluster asterisks.</p></li>
+            <li><span class="tick">→</span><p><b>Raw results</b> — verbatim result records from every run, so you can check our arithmetic.</p></li>
+          </ul>
+          <p class="rfoot">Measured · NVIDIA Cosmos world model · single GPU · Repercep runtime</p>
+        </aside>
+      </div>
+
+      <p class="methodology reveal">We use your details only to send the report and follow up about your workload. Nothing is shared, nothing is sold, no mailing list.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 Repercep, Inc. · machine perception of reality</span>
+    <span>repercep.ai — the compute substrate for world models</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* scroll reveals */
+  var els = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !reduced){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    },{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+    els.forEach(function(el){ io.observe(el); });
+  } else {
+    els.forEach(function(el){ el.classList.add('in'); });
+  }
+
+  /* ---------- business-email gate ---------- */
+  /* exact free/disposable provider domains */
+  var freeExact = [
+    'gmail.com','googlemail.com','ymail.com','rocketmail.com','msn.com','aol.com',
+    'icloud.com','me.com','mac.com','pm.me','protonmail.com','protonmail.ch',
+    'mail.com','email.com','usa.com',
+    'zohomail.com','zohomail.in','qq.com','foxmail.com','163.com','126.com','yeah.net',
+    'sina.com','sina.cn','aliyun.com','rediffmail.com','hey.com',
+    'fastmail.com','fastmail.fm','tutanota.com','tutanota.de','tuta.io','tuta.com',
+    'mail.ru','inbox.ru','list.ru','bk.ru','internet.ru','duck.com','mozmail.com',
+    'web.de','freenet.de','t-online.de','orange.fr','wanadoo.fr','laposte.net','free.fr',
+    'libero.it','virgilio.it','seznam.cz','wp.pl','o2.pl','interia.pl','onet.pl',
+    'naver.com','daum.net','hanmail.net',
+    'yopmail.com','mailinator.com','guerrillamail.com','sharklasers.com',
+    '10minutemail.com','temp-mail.org','dispostable.com','getnada.com','mintemail.com'
+  ];
+  /* provider families with many country TLDs — matched by prefix */
+  var freeFamilies = ['yahoo.','hotmail.','outlook.','live.','gmx.','yandex.','proton.'];
+
+  function isBusinessEmail(addr){
+    var m = /^[^\s@]+@([^\s@]+\.[^\s@]{2,})$/.exec(addr.trim().toLowerCase());
+    if (!m) return false;
+    var domain = m[1];
+    if (freeExact.indexOf(domain) !== -1) return false;
+    for (var i = 0; i < freeFamilies.length; i++){
+      if (domain === freeFamilies[i].slice(0,-1) || domain.indexOf(freeFamilies[i]) === 0) return false;
+    }
+    return true;
+  }
+
+  /* ---------- form ---------- */
+  var form = document.getElementById('benchForm');
+  var email = document.getElementById('f-email');
+  var emailErr = document.getElementById('emailErr');
+  var submitBtn = document.getElementById('benchSubmit');
+  var failNote = document.getElementById('benchFail');
+
+  function fieldOf(input){ return input.closest('.field'); }
+  function setInvalid(input, bad){ fieldOf(input).classList.toggle('invalid', bad); }
+
+  ['f-name','f-email','f-company','f-workload'].forEach(function(id){
+    var el = document.getElementById(id);
+    el.addEventListener('input', function(){ setInvalid(el, false); });
+    el.addEventListener('change', function(){ setInvalid(el, false); });
+  });
+
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    failNote.style.display = 'none';
+
+    var ok = true;
+    [document.getElementById('f-name'), document.getElementById('f-company')].forEach(function(el){
+      var bad = !el.value.trim();
+      setInvalid(el, bad); if (bad) ok = false;
+    });
+    var wl = document.getElementById('f-workload');
+    var wlBad = !wl.value;
+    setInvalid(wl, wlBad); if (wlBad) ok = false;
+
+    var emailVal = email.value.trim();
+    var isValidFormat = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailVal);
+    if (!isValidFormat){
+      emailErr.textContent = 'That doesn’t look like a valid email address.';
+      setInvalid(email, true); ok = false;
+    } else if (!isBusinessEmail(emailVal)){
+      emailErr.textContent = 'Please use your work email — we don’t send the report to personal addresses (Gmail, Yahoo, Outlook, …).';
+      setInvalid(email, true); ok = false;
+    }
+
+    if (!ok){
+      var firstBad = form.querySelector('.field.invalid input, .field.invalid select');
+      if (firstBad) firstBad.focus();
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+
+    fetch('https://formsubmit.co/ajax/ms@repercep.ai', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','Accept':'application/json'},
+      body: JSON.stringify({
+        name: document.getElementById('f-name').value.trim(),
+        email: emailVal,
+        company: document.getElementById('f-company').value.trim(),
+        role: document.getElementById('f-role').value.trim(),
+        workload: wl.value,
+        notes: document.getElementById('f-notes').value.trim(),
+        _subject: 'Benchmark report request — ' + document.getElementById('f-company').value.trim(),
+        _replyto: emailVal,
+        _template: 'table',
+        _honey: form.querySelector('[name="_honey"]').value
+      })
+    }).then(function(r){
+      if (!r.ok) throw new Error('http ' + r.status);
+      return r.json();
+    }).then(function(){
+      form.style.display = 'none';
+      document.getElementById('benchDone').style.display = 'block';
+    }).catch(function(){
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Request the report';
+      failNote.style.display = 'block';
+    });
+  });
+})();
+</script>
+</body>
+</html>

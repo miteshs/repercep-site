@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face{
+  font-family:'Archivo';
+  font-style:normal;
+  font-weight:100 900;
+  font-stretch:62% 125%;
+  src:url(fonts/archivo-var.woff2) format('woff2');
+}
+@font-face{
+  font-family:'Plex Mono';
+  font-style:normal;
+  font-weight:500;
+  src:url(fonts/plexmono-500.woff2) format('woff2');
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1200px;height:630px;overflow:hidden}
+body{
+  background:#0E1119;
+  color:#EDEFF4;
+  font-family:'Archivo',sans-serif;
+  position:relative;
+}
+/* faint latent-grid dots, echoing the hero lattice */
+.dots{
+  position:absolute;inset:0;
+  background-image:radial-gradient(circle, #8B93A7 1.1px, transparent 1.4px);
+  background-size:56px 56px;
+  background-position:14px 20px;
+  opacity:.14;
+  -webkit-mask-image:linear-gradient(105deg, transparent 38%, black 78%);
+          mask-image:linear-gradient(105deg, transparent 38%, black 78%);
+}
+.glow{
+  position:absolute;right:-140px;top:50%;transform:translateY(-50%);
+  width:760px;height:760px;border-radius:50%;
+  background:radial-gradient(circle, rgba(232,163,61,.16) 0%, transparent 62%);
+}
+.card{
+  position:relative;height:100%;
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:64px 72px 58px;
+}
+.lockup{display:flex;align-items:center;gap:18px}
+.lockup svg{width:64px;height:64px;color:#EDEFF4}
+.lockup .word{font-weight:600;font-stretch:110%;font-size:40px;letter-spacing:.01em}
+.lockup .word em{font-style:normal;color:#E8A33D}
+h1{
+  font-size:84px;
+  font-weight:640;
+  font-stretch:116%;
+  line-height:1.06;
+  letter-spacing:-.018em;
+  max-width:640px;
+}
+h1 .amber{color:#E8A33D}
+.foot{
+  display:flex;justify-content:space-between;align-items:baseline;gap:32px;
+  font-family:'Plex Mono',monospace;font-weight:500;
+  font-size:21px;letter-spacing:.12em;text-transform:uppercase;
+  color:#8B93A7;
+  border-top:1px solid #252B3A;padding-top:26px;
+}
+.foot .amber{color:#E8A33D}
+.mark{
+  position:absolute;right:84px;top:118px;
+  width:300px;height:300px;color:#EDEFF4;
+  filter:drop-shadow(0 0 44px rgba(232,163,61,.35));
+}
+</style>
+</head>
+<body>
+<div class="dots"></div>
+<div class="glow"></div>
+<svg class="mark" viewBox="0 0 64 64" aria-hidden="true">
+  <g fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round">
+    <path d="M10 18.5 H54"/><path d="M10 45.5 H54"/>
+    <path d="M10 32 H17.5 M46.5 32 H54"/>
+    <path d="M17.5 32 C22.5 24.2 41.5 24.2 46.5 32"/>
+    <path d="M17.5 32 C22.5 39.8 41.5 39.8 46.5 32"/>
+  </g>
+  <circle cx="32" cy="32" r="4.6" fill="#E8A33D"/>
+</svg>
+<div class="card">
+  <div class="lockup">
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <g fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round">
+        <path d="M10 18.5 H54"/><path d="M10 45.5 H54"/>
+        <path d="M10 32 H17.5 M46.5 32 H54"/>
+        <path d="M17.5 32 C22.5 24.2 41.5 24.2 46.5 32"/>
+        <path d="M17.5 32 C22.5 39.8 41.5 39.8 46.5 32"/>
+      </g>
+      <circle cx="32" cy="32" r="4.6" fill="#E8A33D"/>
+    </svg>
+    <span class="word">repercep<em>.ai</em></span>
+  </div>
+  <h1>The compute substrate for <span class="amber">world models.</span></h1>
+  <div class="foot">
+    <span>Compiler · Kernels · Runtime</span>
+    <span>Measured on <span class="amber">NVIDIA H100 · AMD MI300X</span></span>
+  </div>
+</div>
+</body>
+</html>

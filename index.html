@@ -557,7 +557,7 @@ footer{border-top:1px solid var(--line);padding:1.6rem 0 2.2rem}
         <div class="product">
           <span class="pname">Repercep Runtime <em class="pstat now">Now · design partners</em></span>
           <h3>World-model-native serving</h3>
-          <p>The engine behind our Cosmos results. A lab adopts it in days and serves on NVIDIA, AMD, or CPU from one runtime.</p>
+          <p>One runtime, two regimes: pixel generation and closed-loop, action-conditioned control. A lab adopts it in days and serves on NVIDIA, AMD, or CPU from the same engine.</p>
         </div>
         <div class="product">
           <span class="pname">Repercep Studio <em class="pstat">Next</em></span>
@@ -582,8 +582,8 @@ footer{border-top:1px solid var(--line);padding:1.6rem 0 2.2rem}
   <section class="block" id="results">
     <div class="wrap">
       <div class="section-head reveal"><span class="idx">04</span><span class="eyebrow">Proof</span></div>
-      <h2 class="reveal">Already proven — on NVIDIA's own model, on NVIDIA's own silicon.</h2>
-      <p class="lede reveal">A Repercep runtime already serves NVIDIA's Cosmos world model multiple-× faster than NVIDIA's published serving stack on their own H100 — and brings Cosmos to AMD, where no public run existed before.</p>
+      <h2 class="reveal">Already proven — generation and control, both real, both measured.</h2>
+      <p class="lede reveal">A Repercep runtime already serves NVIDIA's Cosmos world model multiple-× faster than NVIDIA's published serving stack on their own H100 — and now runs the closed-loop, action-conditioned regime too: energy-based latent planning and policy-driven video-action serving, the same silicon-neutral story extended to the models that act, not just render.</p>
 
       <div class="readout reveal" role="figure" aria-label="Measured proof points" style="margin-top:2.6rem">
         <div class="rhead"><span>Measured · NVIDIA Cosmos world model</span><span class="dot">●</span></div>
@@ -599,13 +599,27 @@ footer{border-top:1px solid var(--line);padding:1.6rem 0 2.2rem}
         <a class="btn" href="benchmark.html">Request the benchmark report</a>
       </div>
 
+      <div class="readout reveal" role="figure" aria-label="Measured proof points — closed-loop control" style="margin-top:2rem">
+        <div class="rhead"><span>Measured · closed-loop, action-conditioned world models</span><span class="dot">●</span></div>
+        <div class="row">
+          <span class="chip">NVIDIA H100</span>
+          <p class="claim">Energy-based latent planning and policy-driven video-action serving — two distinct control regimes, one runtime, a closed-loop leaderboard we believe nobody else publishes.</p>
+        </div>
+        <div class="row">
+          <span class="chip">AMD MI300X</span>
+          <p class="claim">The same closed-loop metrics, on silicon most hosted "real-time world model" APIs don't reach — self-hosted, not rented by the second.</p>
+        </div>
+        <p class="rfoot">Closed-loop step latency under state carryover · planning-decisions/sec · resident sessions/GPU · Repercep runtime</p>
+        <a class="btn" href="benchmark.html">Request the benchmark report</a>
+      </div>
+
       <div class="chips reveal">
         <div class="chipstat"><span class="cv">Single GPU</span><span class="cl">every claim reproduced on one GPU — no cluster asterisks</span></div>
         <div class="chipstat"><span class="cv">Days, not quarters</span><span class="cl">the runtime is built to drop into a lab's serving stack in days</span></div>
         <div class="chipstat"><span class="cv">Beyond H100 memory</span><span class="cl">MI300X headroom runs world models that don't fit on an H100 at all</span></div>
       </div>
 
-      <p class="methodology reveal">System-vs-system comparison against NVIDIA's published reference configuration: same model, same frame count, single GPU, end-to-end wall time. Measured numbers and full methodology available on request.</p>
+      <p class="methodology reveal">Generation numbers: system-vs-system comparison against NVIDIA's published reference configuration, same model, same frame count, single GPU, end-to-end wall time. Closed-loop numbers: measured under our own published methodology (state carryover required, warm vs. cold disclosed). Full methodology and measured numbers available on request.</p>
     </div>
   </section>
 

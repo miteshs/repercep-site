@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Request the benchmark report — Repercep</title>
-<meta name="description" content="Request Repercep's measured world-model serving benchmarks — NVIDIA Cosmos on H100 and AMD MI300X, full methodology and raw results.">
+<meta name="description" content="Request Repercep's measured world-model serving benchmarks — generation (NVIDIA Cosmos) and closed-loop control, on H100 and AMD MI300X, full methodology and raw results.">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta property="og:title" content="Request the benchmark report — Repercep">
-<meta property="og:description" content="Measured world-model serving numbers: NVIDIA Cosmos on H100 and AMD MI300X, full methodology, raw result provenance.">
+<meta property="og:description" content="Measured world-model serving numbers — generation (NVIDIA Cosmos) and closed-loop control, on H100 and AMD MI300X — full methodology, raw result provenance.">
 <meta property="og:url" content="https://repercep.ai/benchmark.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Repercep">
@@ -17,7 +17,7 @@
 <meta property="og:image:alt" content="Repercep — the compute substrate for world models. Compiler, kernels, runtime. Measured on NVIDIA H100 and AMD MI300X.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Request the benchmark report — Repercep">
-<meta name="twitter:description" content="Measured world-model serving numbers: NVIDIA Cosmos on H100 and AMD MI300X, full methodology, raw result provenance.">
+<meta name="twitter:description" content="Measured world-model serving numbers — generation (NVIDIA Cosmos) and closed-loop control, on H100 and AMD MI300X — full methodology, raw result provenance.">
 <meta name="twitter:image" content="https://repercep.ai/og.png">
 <link rel="canonical" href="https://repercep.ai/benchmark.html">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F6F7F9">
@@ -423,10 +423,11 @@ footer{border-top:1px solid var(--line);padding:1.6rem 0 2.2rem;margin-top:clamp
           <ul>
             <li><span class="tick">→</span><p><b>NVIDIA H100</b> — Repercep runtime vs NVIDIA's published Cosmos serving stack, end-to-end wall time.</p></li>
             <li><span class="tick">→</span><p><b>AMD MI300X</b> — the first public Cosmos run on AMD silicon, with the full ROCm software matrix.</p></li>
+            <li><span class="tick">→</span><p><b>Closed-loop control</b> — energy-based planning and policy-driven video-action serving, both regimes, both vendors: step latency under state carryover, planning-decisions/sec, resident sessions/GPU.</p></li>
             <li><span class="tick">→</span><p><b>Methodology</b> — same model, same frame count, single GPU. System-vs-system, no cluster asterisks.</p></li>
             <li><span class="tick">→</span><p><b>Raw results</b> — verbatim result records from every run, so you can check our arithmetic.</p></li>
           </ul>
-          <p class="rfoot">Measured · NVIDIA Cosmos world model · single GPU · Repercep runtime</p>
+          <p class="rfoot">Measured · generation + closed-loop control · single GPU · Repercep runtime</p>
         </aside>
       </div>
 
